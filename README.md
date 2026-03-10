@@ -5,6 +5,7 @@
 
 <!-- badges: start -->
 
+[![R-CMD-check](https://github.com/christopherkenny/enum/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/christopherkenny/enum/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 `enum` enumerates all partitions of a graph into `k` connected pieces

@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 # enum <img src="man/figures/logo.png" align="right" height="122" alt="" />
 
 <!-- badges: start -->
+[![R-CMD-check](https://github.com/christopherkenny/enum/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/christopherkenny/enum/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 `enum` enumerates all partitions of a graph into `k` connected pieces within given piece-size bounds.

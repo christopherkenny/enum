@@ -28,3 +28,4 @@ Imports:
 Depends:
     R (>= 4.2.0)
 Language: en-US
+URL: http://christophertkenny.com/enum/
