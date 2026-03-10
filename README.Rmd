@@ -1,0 +1,76 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# enum
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+`enum` enumerates all partitions of a graph into `k` connected pieces within
+given piece-size bounds. It is a direct R translation of the Julia
+[enumerator](https://github.com/zschutzman/enumerator) package by Zachary
+Schutzman, reimplemented using
+[igraph](https://r.igraph.org/).
+
+## Installation
+
+```r
+# install.packages("pak")
+pak::pak("christopherkenny/enum")
+```
+
+## Usage
+
+### Grid partitions
+
+The primary interface partitions rectangular grids under rook or queen
+contiguity. Each column of the returned matrix is one valid partition; each
+row corresponds to a grid cell in row-major order, with integer values
+giving part membership.
+
+```{r grid}
+library(enum)
+
+# All ways to split a 3x3 grid into 3 rook-connected pieces of size 3
+enum_partitions(3, 3, num_parts = 3, min_size = 3, max_size = 3)
+```
+
+For example, one valid partition of the 3×3 grid
+
+```
+1 1 2
+1 2 2
+3 3 3
+```
+
+is stored as the column `c(1, 1, 2, 1, 2, 2, 3, 3, 3)`.
+
+We can also count the number, which is faster if you don't need the full output:
+
+```{r countgrid}
+enum_count_partitions(3, 3, num_parts = 3, min_size = 3, max_size = 3)
+```
+
+### Graph partitions
+
+For arbitrary graphs, pass an `igraph` object (or an `adj` object — a
+1-indexed adjacency list):
+
+```{r graph, eval = FALSE}
+library(igraph)
+
+g <- make_ring(6)
+enum_partitions_graph(g, num_parts = 2, min_size = 3, max_size = 3)
+```

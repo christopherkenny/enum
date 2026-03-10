@@ -1,0 +1,20 @@
+url: ~
+template:
+  bootstrap: 5
+
+reference:
+- title: Grid partitions
+  desc: >
+    Enumerate or count all connected partitions of a rectangular grid
+    within given piece-size bounds.
+  contents:
+  - enum_partitions
+  - enum_count_partitions
+- title: Graph partitions
+  desc: >
+    Enumerate or count all connected partitions of an arbitrary graph
+    within given piece-size bounds. Accepts `igraph` and `adj` objects.
+  contents:
+  - enum_partitions_graph
+  - enum_count_partitions_graph
+

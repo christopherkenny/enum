@@ -1,0 +1,28 @@
+Package: enum
+Title: Enumerate Partitions of Grid Graphs
+Version: 0.0.0.9000
+Authors@R: c(
+    person(given = "Christopher T.",
+           family = "Kenny",
+           role = c("aut", "cre"),
+           email = "ctkenny@proton.me",
+           comment = c(ORCID = "0000-0002-9386-6860")),
+    person("Zachary", "Schutzman", role = "aut",
+           comment = "Author of the original Julia enumerator")
+    )
+Description: Enumerates polyomino tilings of grid graphs. Partitions an m by n
+    grid into k connected pieces where each piece has a size within given
+    bounds, under rook or queen contiguity rules. A translation of the Julia
+    'enumerator' package by Schutzman (2019) <doi:10.5281/zenodo.3467675>.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Suggests:
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Imports:
+    cli,
+    igraph
+Depends:
+    R (>= 4.2.0)
