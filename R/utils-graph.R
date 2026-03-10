@@ -64,22 +64,23 @@ make_omino_set <- function(cells, graph) {
 }
 
 grow_ominos <- function(ominos, graph) {
-  n <- igraph::vcount(graph)
+  adj <- igraph::as_adj_list(graph, mode = "all")
   seen <- list()
   result <- list()
 
   for (om in ominos) {
-    for (pos in seq_len(n)) {
-      if (om[pos] == 0L) {
-        candidate <- om
-        candidate[pos] <- 1L
-        if (valid_omino(candidate, graph)) {
-          key <- paste0(candidate, collapse = '')
-          if (is.null(seen[[key]])) {
-            seen[[key]] <- TRUE
-            result <- c(result, list(candidate))
-          }
-        }
+    ones <- which(om == 1L)
+    candidates <- setdiff(
+      unique(unlist(adj[ones], use.names = FALSE)),
+      ones
+    )
+    for (pos in candidates) {
+      candidate <- om
+      candidate[pos] <- 1L
+      key <- paste0(candidate, collapse = '')
+      if (is.null(seen[[key]])) {
+        seen[[key]] <- TRUE
+        result <- c(result, list(candidate))
       }
     }
   }

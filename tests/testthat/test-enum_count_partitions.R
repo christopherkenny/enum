@@ -45,6 +45,13 @@ test_that('enum_count_partitions queen yields at least as many as rook', {
   expect_gte(queen, rook)
 })
 
+test_that('enum_count_partitions 4x4 into 4 equal parts of size 4 gives 117', {
+  expect_equal(
+    enum_count_partitions(4, 4, num_parts = 4, min_size = 4, max_size = 4),
+    117L
+  )
+})
+
 test_that('enum_count_partitions validates bad inputs', {
   expect_snapshot(
     enum_count_partitions(0, 3, num_parts = 2, min_size = 3, max_size = 3),

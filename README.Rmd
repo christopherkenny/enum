@@ -62,7 +62,7 @@ enum_count_partitions(3, 3, num_parts = 3, min_size = 3, max_size = 3)
 
 For arbitrary graphs, pass an `igraph` object (or an [`adj` object](https://alarm-redist.org/adj/)):
 
-```{r graph, eval = FALSE}
+```{r graph}
 library(igraph)
 
 g <- make_ring(6)
