@@ -10,7 +10,8 @@ enum_partitions(
   num_parts,
   min_size,
   max_size,
-  contiguity = c("rook", "queen")
+  contiguity = c("rook", "queen"),
+  file = NULL
 )
 }
 \arguments{
@@ -26,11 +27,19 @@ enum_partitions(
 
 \item{contiguity}{Character. Either \code{"rook"} (default) for edge-adjacency
 or \code{"queen"} for edge-and-corner adjacency.}
+
+\item{file}{Character or \code{NULL}. If a file path is provided, partitions are
+written to a binary file instead of returned as a matrix. Each partition is
+stored as \code{nrow * ncol} consecutive 32-bit integers. Use
+\code{\link[=enum_read_partitions]{enum_read_partitions()}} to read the file back into R. When \code{file} is not
+\code{NULL}, the function returns the partition count invisibly.}
 }
 \value{
-An integer matrix where each column is a partition and each row
-corresponds to a cell of the grid in row-major order. Cell values are
-integers from \code{1} to \code{num_parts} indicating part membership.
+When \code{file} is \code{NULL} (default), an integer matrix where each column
+is a partition and each row corresponds to a cell of the grid in row-major
+order. Cell values are integers from \code{1} to \code{num_parts} indicating part
+membership. When \code{file} is a path, returns the number of partitions
+written, invisibly.
 }
 \description{
 Enumerate all partitions of an \code{nrow} by \code{ncol} grid into \code{num_parts}

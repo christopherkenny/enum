@@ -11,10 +11,17 @@
 #' @param max_size Integer. Maximum number of cells per part.
 #' @param contiguity Character. Either `"rook"` (default) for edge-adjacency
 #'   or `"queen"` for edge-and-corner adjacency.
+#' @param file Character or `NULL`. If a file path is provided, partitions are
+#'   written to a binary file instead of returned as a matrix. Each partition is
+#'   stored as `nrow * ncol` consecutive 32-bit integers. Use
+#'   [enum_read_partitions()] to read the file back into R. When `file` is not
+#'   `NULL`, the function returns the partition count invisibly.
 #'
-#' @return An integer matrix where each column is a partition and each row
-#'   corresponds to a cell of the grid in row-major order. Cell values are
-#'   integers from `1` to `num_parts` indicating part membership.
+#' @return When `file` is `NULL` (default), an integer matrix where each column
+#'   is a partition and each row corresponds to a cell of the grid in row-major
+#'   order. Cell values are integers from `1` to `num_parts` indicating part
+#'   membership. When `file` is a path, returns the number of partitions
+#'   written, invisibly.
 #' @export
 #'
 #' @examples
@@ -26,7 +33,8 @@ enum_partitions <- function(
   num_parts,
   min_size,
   max_size,
-  contiguity = c('rook', 'queen')
+  contiguity = c('rook', 'queen'),
+  file = NULL
 ) {
   contiguity <- check_contiguity(contiguity)
   check_grid_dimensions(nrow, ncol)
@@ -44,5 +52,10 @@ enum_partitions <- function(
     min_size,
     max_size
   )
+
+  if (!is.null(file)) {
+    return(invisible(stream_enumeration(core, num_parts, file)))
+  }
+
   run_enumeration(core, num_parts, collect = TRUE)
 }

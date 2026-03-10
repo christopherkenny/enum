@@ -17,4 +17,10 @@ reference:
   contents:
   - enum_partitions_graph
   - enum_count_partitions_graph
+- title: File I/O
+  desc: >
+    Read partitions written to a binary file by `enum_partitions()` or
+    `enum_partitions_graph()`.
+  contents:
+  - enum_read_partitions
 

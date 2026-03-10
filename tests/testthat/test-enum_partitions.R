@@ -45,6 +45,25 @@ test_that('enum_partitions 3x3 into 3 triominoes has 10 solutions', {
   expect_equal(ncol(result), 10)
 })
 
+test_that('enum_partitions file argument writes and enum_read_partitions reads back', {
+  tmp <- tempfile()
+  on.exit(unlink(tmp))
+  n <- enum_partitions(
+    2,
+    3,
+    num_parts = 2,
+    min_size = 3,
+    max_size = 3,
+    file = tmp
+  )
+  expect_equal(n, 3L)
+  mat <- enum_read_partitions(tmp)
+  expect_equal(
+    mat,
+    enum_partitions(2, 3, num_parts = 2, min_size = 3, max_size = 3)
+  )
+})
+
 test_that('enum_partitions validates bad inputs', {
   expect_snapshot(
     enum_partitions(0, 3, num_parts = 2, min_size = 3, max_size = 3),

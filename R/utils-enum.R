@@ -69,7 +69,7 @@ verify_plan <- function(plan, compatible) {
 }
 
 # Run the recursive partition enumeration via C. When collect = TRUE, returns a
-# matrix; when collect = FALSE, returns only the integer count.
+# matrix (two-pass: count then fill); when collect = FALSE, returns the count.
 run_enumeration <- function(core, num_parts, collect) {
   if (core$n_ominos == 0L) {
     if (collect) {
@@ -79,7 +79,7 @@ run_enumeration <- function(core, num_parts, collect) {
     }
   }
 
-  .Call(
+  count <- .Call(
     C_run_enumeration,
     core$ominos_mat,
     core$fd_ptr,
@@ -89,7 +89,49 @@ run_enumeration <- function(core, num_parts, collect) {
     as.integer(core$total),
     as.integer(core$n_ominos),
     as.integer(num_parts),
-    collect
+    FALSE
+  )
+
+  if (!collect) {
+    return(count)
+  }
+
+  if (count == 0L) {
+    return(matrix(integer(0), nrow = core$total, ncol = 0L))
+  }
+
+  out <- matrix(0L, nrow = core$total, ncol = count)
+  .Call(
+    C_fill_enumeration,
+    core$ominos_mat,
+    core$fd_ptr,
+    core$fd_data,
+    core$cp_ptr,
+    core$cp_data,
+    as.integer(core$total),
+    as.integer(core$n_ominos),
+    as.integer(num_parts),
+    out
+  )
+  out
+}
+
+stream_enumeration <- function(core, num_parts, file) {
+  if (core$n_ominos == 0L) {
+    return(0L)
+  }
+
+  .Call(
+    C_stream_enumeration,
+    core$ominos_mat,
+    core$fd_ptr,
+    core$fd_data,
+    core$cp_ptr,
+    core$cp_data,
+    as.integer(core$total),
+    as.integer(core$n_ominos),
+    as.integer(num_parts),
+    as.character(file)
   )
 }
 

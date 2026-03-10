@@ -4,7 +4,7 @@
 \alias{enum_partitions_graph}
 \title{Enumerate partitions of a graph}
 \usage{
-enum_partitions_graph(graph, num_parts, min_size, max_size)
+enum_partitions_graph(graph, num_parts, min_size, max_size, file = NULL)
 }
 \arguments{
 \item{graph}{An \code{igraph} or \code{adj} object. Must be undirected and connected.
@@ -16,11 +16,19 @@ An \code{adj} object is a list where element \code{i} contains the integer indic
 \item{min_size}{Integer. Minimum number of vertices per part.}
 
 \item{max_size}{Integer. Maximum number of vertices per part.}
+
+\item{file}{Character or \code{NULL}. If a file path is provided, partitions are
+written to a binary file instead of returned as a matrix. Each partition is
+stored as one 32-bit integer per vertex. Use \code{\link[=enum_read_partitions]{enum_read_partitions()}} to
+read the file back into R. When \code{file} is not \code{NULL}, the function returns
+the partition count invisibly.}
 }
 \value{
-An integer matrix where each column is a partition and each row
-corresponds to a vertex (in igraph vertex order). Cell values are integers
-from \code{1} to \code{num_parts} indicating part membership.
+When \code{file} is \code{NULL} (default), an integer matrix where each column
+is a partition and each row corresponds to a vertex (in igraph vertex
+order). Cell values are integers from \code{1} to \code{num_parts} indicating part
+membership. When \code{file} is a path, returns the number of partitions
+written, invisibly.
 }
 \description{
 Enumerate all partitions of an arbitrary graph into \code{num_parts} connected
