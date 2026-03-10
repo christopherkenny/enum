@@ -64,7 +64,7 @@ make_omino_set <- function(cells, graph) {
 }
 
 grow_ominos <- function(ominos, graph) {
-  adj <- igraph::as_adj_list(graph, mode = "all")
+  adj <- igraph::as_adj_list(graph, mode = 'all')
   seen <- list()
   result <- list()
 

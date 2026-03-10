@@ -29,7 +29,7 @@ build_enumeration_core <- function(graph, min_size, max_size) {
 
   ominos_mat <- matrix(unlist(ominos, use.names = FALSE), nrow = total)
 
-  adj_list <- igraph::as_adj_list(graph, mode = "all")
+  adj_list <- igraph::as_adj_list(graph, mode = 'all')
   adj_ptr <- c(0L, cumsum(lengths(adj_list, use.names = FALSE)))
   adj_data <- unlist(lapply(adj_list, as.integer), use.names = FALSE) - 1L
 

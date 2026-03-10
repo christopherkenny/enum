@@ -7,3 +7,4 @@ docs
 .quarto
 *.o
 *.dll
+data-raw/logo_insert.png

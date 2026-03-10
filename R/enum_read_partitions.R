@@ -22,11 +22,11 @@
 #' enum_read_partitions(tmp, skip = 2, n = 3)
 enum_read_partitions <- function(file, skip = 0L, n = NULL) {
   skip <- as.integer(skip)
-  con <- base::file(file, "rb")
+  con <- base::file(file, 'rb')
   on.exit(close(con))
   n_cells <- readBin(con, what = integer(), n = 1L)
   if (skip > 0L) {
-    seek(con, where = as.numeric(skip) * n_cells * 4, origin = "current")
+    seek(con, where = as.numeric(skip) * n_cells * 4, origin = 'current')
   }
   n_ints <- if (is.null(n)) {
     file.info(file)$size / 4 - 1 - as.numeric(skip) * n_cells

@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# enum
+# enum <img src="man/figures/logo.png" align="right" height="122" alt="" />
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -67,4 +67,26 @@ library(igraph)
 
 g <- make_ring(6)
 enum_partitions_graph(g, num_parts = 2, min_size = 3, max_size = 3)
+```
+
+### Writing to file
+
+For large enumerations that would exceed available memory, pass a file path to write partitions directly to disk.
+Each partition is appended as it is found, so memory use stays flat.
+
+```{r file}
+tmp <- tempfile()
+n <- enum_partitions(4, 4, num_parts = 4, min_size = 4, max_size = 4, file = tmp)
+n  # number of partitions written
+```
+
+Read them back all at once, or in chunks using `skip` and `n`:
+
+```{r read}
+# All 117 partitions
+mat <- enum_read_partitions(tmp)
+dim(mat)
+
+# Partitions 11–20 only
+enum_read_partitions(tmp, skip = 10, n = 10)
 ```
