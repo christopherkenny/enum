@@ -1,7 +1,7 @@
 make_grid_graph <- function(nrow, ncol, contiguity) {
   g <- igraph::make_lattice(c(ncol, nrow))
 
-  if (contiguity == "queen") {
+  if (contiguity == 'queen') {
     edges <- integer(0)
     for (i in seq_len(nrow - 1L)) {
       for (j in seq_len(ncol - 1L)) {
@@ -42,7 +42,7 @@ make_omino_set <- function(cells, graph) {
   n <- igraph::vcount(graph)
 
   if (cells == 1L) {
-    ominos <- vector("list", n)
+    ominos <- vector('list', n)
     for (i in seq_len(n)) {
       om <- integer(n)
       om[i] <- 1L
@@ -74,7 +74,7 @@ grow_ominos <- function(ominos, graph) {
         candidate <- om
         candidate[pos] <- 1L
         if (valid_omino(candidate, graph)) {
-          key <- paste0(candidate, collapse = "")
+          key <- paste0(candidate, collapse = '')
           if (is.null(seen[[key]])) {
             seen[[key]] <- TRUE
             result <- c(result, list(candidate))
@@ -108,7 +108,7 @@ build_conflicts <- function(ominos, bad_holes, graph) {
   n_om <- length(ominos)
   n <- igraph::vcount(graph)
 
-  first_dict <- vector("list", n)
+  first_dict <- vector('list', n)
   for (i in seq_len(n)) {
     first_dict[[i]] <- integer(0)
   }
@@ -117,7 +117,7 @@ build_conflicts <- function(ominos, bad_holes, graph) {
     first_dict[[k]] <- c(first_dict[[k]], i)
   }
 
-  compatible <- vector("list", n_om)
+  compatible <- vector('list', n_om)
   for (i in seq_len(n_om)) {
     compatible[[i]] <- integer(0)
   }

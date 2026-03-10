@@ -26,7 +26,7 @@ enum_partitions <- function(
   num_parts,
   min_size,
   max_size,
-  contiguity = c("rook", "queen")
+  contiguity = c('rook', 'queen')
 ) {
   contiguity <- check_contiguity(contiguity)
   check_grid_dimensions(nrow, ncol)

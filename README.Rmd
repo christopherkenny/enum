@@ -7,9 +7,9 @@ output: github_document
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%"
+  comment = '#>',
+  fig.path = 'man/figures/README-',
+  out.width = '100%'
 )
 ```
 
@@ -18,27 +18,22 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-`enum` enumerates all partitions of a graph into `k` connected pieces within
-given piece-size bounds. It is a direct R translation of the Julia
-[enumerator](https://github.com/zschutzman/enumerator) package by Zachary
-Schutzman, reimplemented using
-[igraph](https://r.igraph.org/).
+`enum` enumerates all partitions of a graph into `k` connected pieces within given piece-size bounds.
+It is a direct R translation of the Julia [enumerator](https://github.com/zschutzman/enumerator) package by Zachary Schutzman, reimplemented using [igraph](https://r.igraph.org/).
 
 ## Installation
 
 ```r
-# install.packages("pak")
-pak::pak("christopherkenny/enum")
+# install.packages('pak')
+pak::pak('christopherkenny/enum')
 ```
 
 ## Usage
 
 ### Grid partitions
 
-The primary interface partitions rectangular grids under rook or queen
-contiguity. Each column of the returned matrix is one valid partition; each
-row corresponds to a grid cell in row-major order, with integer values
-giving part membership.
+The primary interface partitions rectangular grids under rook or queen contiguity.
+Each column of the returned matrix is one valid partition; each row corresponds to a grid cell in row-major order, with integer values giving part membership.
 
 ```{r grid}
 library(enum)
@@ -65,8 +60,7 @@ enum_count_partitions(3, 3, num_parts = 3, min_size = 3, max_size = 3)
 
 ### Graph partitions
 
-For arbitrary graphs, pass an `igraph` object (or an `adj` object — a
-1-indexed adjacency list):
+For arbitrary graphs, pass an `igraph` object (or an [`adj` object](https://alarm-redist.org/adj/)):
 
 ```{r graph, eval = FALSE}
 library(igraph)

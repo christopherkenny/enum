@@ -9,4 +9,4 @@
 library(testthat)
 library(enum)
 
-test_check("enum")
+test_check('enum')

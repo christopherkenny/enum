@@ -20,7 +20,7 @@ build_enumeration_core <- function(graph, min_size, max_size) {
   if (length(ominos) == 0L) {
     return(list(
       ominos = list(),
-      first_dict = vector("list", total),
+      first_dict = vector('list', total),
       compatible = list(),
       total = total
     ))

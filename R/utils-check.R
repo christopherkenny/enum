@@ -5,7 +5,7 @@ check_grid_dimensions <- function(nrow, ncol) {
       nrow < 1L ||
       nrow != as.integer(nrow)
   ) {
-    cli::cli_abort("{.arg nrow} must be a single positive integer.")
+    cli::cli_abort('{.arg nrow} must be a single positive integer.')
   }
   if (
     !is.numeric(ncol) ||
@@ -13,7 +13,7 @@ check_grid_dimensions <- function(nrow, ncol) {
       ncol < 1L ||
       ncol != as.integer(ncol)
   ) {
-    cli::cli_abort("{.arg ncol} must be a single positive integer.")
+    cli::cli_abort('{.arg ncol} must be a single positive integer.')
   }
 }
 
@@ -24,12 +24,12 @@ check_num_parts <- function(num_parts, nrow, ncol) {
       num_parts < 1L ||
       num_parts != as.integer(num_parts)
   ) {
-    cli::cli_abort("{.arg num_parts} must be a single positive integer.")
+    cli::cli_abort('{.arg num_parts} must be a single positive integer.')
   }
   total <- nrow * ncol
   if (num_parts > total) {
     cli::cli_abort(
-      "{.arg num_parts} ({num_parts}) cannot exceed the number of grid cells ({total})."
+      '{.arg num_parts} ({num_parts}) cannot exceed the number of grid cells ({total}).'
     )
   }
 }
@@ -41,7 +41,7 @@ check_sizes <- function(min_size, max_size, num_parts, nrow, ncol) {
       min_size < 1L ||
       min_size != as.integer(min_size)
   ) {
-    cli::cli_abort("{.arg min_size} must be a single positive integer.")
+    cli::cli_abort('{.arg min_size} must be a single positive integer.')
   }
   if (
     !is.numeric(max_size) ||
@@ -49,11 +49,11 @@ check_sizes <- function(min_size, max_size, num_parts, nrow, ncol) {
       max_size < 1L ||
       max_size != as.integer(max_size)
   ) {
-    cli::cli_abort("{.arg max_size} must be a single positive integer.")
+    cli::cli_abort('{.arg max_size} must be a single positive integer.')
   }
   if (min_size > max_size) {
     cli::cli_abort(
-      "{.arg min_size} ({min_size}) must be <= {.arg max_size} ({max_size})."
+      '{.arg min_size} ({min_size}) must be <= {.arg max_size} ({max_size}).'
     )
   }
 
@@ -61,34 +61,34 @@ check_sizes <- function(min_size, max_size, num_parts, nrow, ncol) {
   if (num_parts * max_size < total) {
     cli::cli_abort(
       paste0(
-        "Impossible to tile: {num_parts} parts of at most size {max_size} ",
-        "cannot cover {total} cells."
+        'Impossible to tile: {num_parts} parts of at most size {max_size} ',
+        'cannot cover {total} cells.'
       )
     )
   }
   if (num_parts * min_size > total) {
     cli::cli_abort(
       paste0(
-        "Impossible to tile: {num_parts} parts of at least size {min_size} ",
-        "exceed {total} cells."
+        'Impossible to tile: {num_parts} parts of at least size {min_size} ',
+        'exceed {total} cells.'
       )
     )
   }
 }
 
 check_contiguity <- function(contiguity) {
-  match.arg(contiguity, c("rook", "queen"))
+  match.arg(contiguity, c('rook', 'queen'))
 }
 
 check_graph <- function(graph) {
   if (igraph::is_directed(graph)) {
-    cli::cli_abort("{.arg graph} must be undirected.")
+    cli::cli_abort('{.arg graph} must be undirected.')
   }
   if (!igraph::is_connected(graph)) {
-    cli::cli_abort("{.arg graph} must be connected.")
+    cli::cli_abort('{.arg graph} must be connected.')
   }
   if (igraph::vcount(graph) == 0L) {
-    cli::cli_abort("{.arg graph} must have at least one vertex.")
+    cli::cli_abort('{.arg graph} must have at least one vertex.')
   }
 }
 
@@ -99,11 +99,11 @@ check_num_parts_graph <- function(num_parts, total) {
       num_parts < 1L ||
       num_parts != as.integer(num_parts)
   ) {
-    cli::cli_abort("{.arg num_parts} must be a single positive integer.")
+    cli::cli_abort('{.arg num_parts} must be a single positive integer.')
   }
   if (num_parts > total) {
     cli::cli_abort(
-      "{.arg num_parts} ({num_parts}) cannot exceed the number of vertices ({total})."
+      '{.arg num_parts} ({num_parts}) cannot exceed the number of vertices ({total}).'
     )
   }
 }
@@ -115,7 +115,7 @@ check_sizes_graph <- function(min_size, max_size, num_parts, total) {
       min_size < 1L ||
       min_size != as.integer(min_size)
   ) {
-    cli::cli_abort("{.arg min_size} must be a single positive integer.")
+    cli::cli_abort('{.arg min_size} must be a single positive integer.')
   }
   if (
     !is.numeric(max_size) ||
@@ -123,26 +123,26 @@ check_sizes_graph <- function(min_size, max_size, num_parts, total) {
       max_size < 1L ||
       max_size != as.integer(max_size)
   ) {
-    cli::cli_abort("{.arg max_size} must be a single positive integer.")
+    cli::cli_abort('{.arg max_size} must be a single positive integer.')
   }
   if (min_size > max_size) {
     cli::cli_abort(
-      "{.arg min_size} ({min_size}) must be <= {.arg max_size} ({max_size})."
+      '{.arg min_size} ({min_size}) must be <= {.arg max_size} ({max_size}).'
     )
   }
   if (num_parts * max_size < total) {
     cli::cli_abort(
       paste0(
-        "Impossible to partition: {num_parts} parts of at most size ",
-        "{max_size} cannot cover {total} vertices."
+        'Impossible to partition: {num_parts} parts of at most size ',
+        '{max_size} cannot cover {total} vertices.'
       )
     )
   }
   if (num_parts * min_size > total) {
     cli::cli_abort(
       paste0(
-        "Impossible to partition: {num_parts} parts of at least size ",
-        "{min_size} exceed {total} vertices."
+        'Impossible to partition: {num_parts} parts of at least size ',
+        '{min_size} exceed {total} vertices.'
       )
     )
   }
@@ -155,11 +155,11 @@ to_igraph <- function(graph) {
   if (igraph::is_igraph(graph)) {
     return(graph)
   }
-  if (inherits(graph, "adj")) {
+  if (inherits(graph, 'adj')) {
     return(adj_to_igraph(graph))
   }
   cli::cli_abort(
-    "{.arg graph} must be an {.cls igraph} or {.cls adj} object."
+    '{.arg graph} must be an {.cls igraph} or {.cls adj} object.'
   )
 }
 
