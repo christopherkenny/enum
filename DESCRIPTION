@@ -4,10 +4,10 @@ Version: 0.0.1
 Authors@R: c(
     person(given = "Christopher T.",
            family = "Kenny",
-           role = c("aut", "cre"),
+           role = c("aut", "cre", "cph"),
            email = "ctkenny@proton.me",
            comment = c(ORCID = "0000-0002-9386-6860")),
-    person("Zachary", "Schutzman", role = "aut",
+    person("Zachary", "Schutzman", role = "cph",
            comment = "Author of the original Julia enumerator")
     )
 Description: Enumerates polyomino tilings of grid graphs. Partitions an m by n
