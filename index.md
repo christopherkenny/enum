@@ -1,0 +1,127 @@
+# enum
+
+`enum` enumerates all partitions of a graph into `k` connected pieces
+within given piece-size bounds. It is a reimplementation of the Julia
+[enumerator](https://github.com/zschutzman/enumerator) package by
+Zachary Schutzman, with core algorithms written in C and support for
+[igraph](https://r.igraph.org/) objects as input.
+
+## Installation
+
+``` r
+# install.packages('pak')
+pak::pak('christopherkenny/enum')
+```
+
+## Usage
+
+### Grid partitions
+
+The primary interface partitions rectangular grids under rook or queen
+contiguity. Each column of the returned matrix is one valid partition;
+each row corresponds to a grid cell in row-major order, with integer
+values giving part membership.
+
+``` r
+library(enum)
+
+# All ways to split a 3x3 grid into 3 rook-connected pieces of size 3
+enum_partitions(3, 3, num_parts = 3, min_size = 3, max_size = 3)
+#>       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+#>  [1,]    1    1    1    1    1    1    1    1    1     1
+#>  [2,]    1    1    1    1    1    1    2    2    2     2
+#>  [3,]    2    2    1    1    1    2    2    2    2     3
+#>  [4,]    1    1    2    2    2    3    1    1    1     1
+#>  [5,]    2    3    2    2    3    1    1    2    3     2
+#>  [6,]    2    2    3    2    3    2    2    3    2     3
+#>  [7,]    3    3    2    3    2    3    3    1    1     1
+#>  [8,]    3    3    3    3    2    3    3    3    3     2
+#>  [9,]    3    2    3    3    3    2    3    3    3     3
+```
+
+For example, one valid partition of the 3×3 grid
+
+``` R
+1 1 2
+1 2 2
+3 3 3
+```
+
+is stored as the column `c(1, 1, 2, 1, 2, 2, 3, 3, 3)`.
+
+We can also count the number, which is faster if you don’t need the full
+output:
+
+``` r
+enum_count_partitions(3, 3, num_parts = 3, min_size = 3, max_size = 3)
+#> [1] 10
+```
+
+### Graph partitions
+
+For arbitrary graphs, pass an `igraph` object (or an [`adj`
+object](https://alarm-redist.org/adj/)):
+
+``` r
+library(igraph)
+#> 
+#> Attaching package: 'igraph'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     decompose, spectrum
+#> The following object is masked from 'package:base':
+#> 
+#>     union
+
+g <- make_ring(6)
+enum_partitions_graph(g, num_parts = 2, min_size = 3, max_size = 3)
+#>      [,1] [,2] [,3]
+#> [1,]    1    1    1
+#> [2,]    1    1    2
+#> [3,]    2    1    2
+#> [4,]    2    2    2
+#> [5,]    2    2    1
+#> [6,]    1    2    1
+```
+
+### Writing to file
+
+For large enumerations that would exceed available memory, pass a file
+path to write partitions directly to disk. Each partition is appended as
+it is found, so memory use stays flat.
+
+``` r
+tmp <- tempfile()
+n <- enum_partitions(4, 4, num_parts = 4, min_size = 4, max_size = 4, file = tmp)
+n  # number of partitions written
+#> [1] 117
+```
+
+Read them back all at once, or in chunks using `skip` and `n`:
+
+``` r
+# All 117 partitions
+mat <- enum_read_partitions(tmp)
+dim(mat)
+#> [1]  16 117
+
+# Partitions 11–20 only
+enum_read_partitions(tmp, skip = 10, n = 10)
+#>       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+#>  [1,]    1    1    1    1    1    1    1    1    1     1
+#>  [2,]    1    1    1    1    1    1    1    1    1     1
+#>  [3,]    1    1    2    2    2    2    2    2    2     2
+#>  [4,]    2    2    2    2    2    2    2    2    2     3
+#>  [5,]    1    1    1    1    1    1    1    1    1     1
+#>  [6,]    3    3    1    1    1    1    1    1    1     1
+#>  [7,]    3    4    2    2    2    2    2    3    3     2
+#>  [8,]    2    2    2    2    2    2    3    2    2     3
+#>  [9,]    4    3    3    3    3    3    4    3    4     4
+#> [10,]    4    3    3    3    3    4    4    3    4     2
+#> [11,]    3    4    3    4    3    4    2    3    3     2
+#> [12,]    2    2    4    4    3    4    3    2    2     3
+#> [13,]    4    3    3    3    4    3    4    4    4     4
+#> [14,]    4    4    4    3    4    3    4    4    4     4
+#> [15,]    3    4    4    4    4    3    3    4    3     4
+#> [16,]    2    2    4    4    4    4    3    4    3     3
+```
