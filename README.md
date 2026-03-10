@@ -8,9 +8,10 @@
 <!-- badges: end -->
 
 `enum` enumerates all partitions of a graph into `k` connected pieces
-within given piece-size bounds. It is a direct R translation of the
-Julia [enumerator](https://github.com/zschutzman/enumerator) package by
-Zachary Schutzman, reimplemented using [igraph](https://r.igraph.org/).
+within given piece-size bounds. It is a reimplementation of the Julia
+[enumerator](https://github.com/zschutzman/enumerator) package by
+Zachary Schutzman, with core algorithms written in C and support for
+[igraph](https://r.igraph.org/) objects as input.
 
 ## Installation
 
