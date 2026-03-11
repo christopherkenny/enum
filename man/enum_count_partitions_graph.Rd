@@ -4,7 +4,14 @@
 \alias{enum_count_partitions_graph}
 \title{Count partitions of a graph}
 \usage{
-enum_count_partitions_graph(graph, num_parts, min_size, max_size)
+enum_count_partitions_graph(
+  graph,
+  num_parts,
+  min_size = NULL,
+  max_size = NULL,
+  exact_sizes = NULL,
+  progress = TRUE
+)
 }
 \arguments{
 \item{graph}{An \code{igraph} or \code{adj} object. Must be undirected and connected.
@@ -13,18 +20,29 @@ An \code{adj} object is a list where element \code{i} contains the integer indic
 
 \item{num_parts}{Integer. Number of parts to partition the graph into.}
 
-\item{min_size}{Integer. Minimum number of vertices per part.}
+\item{min_size}{Integer or \code{NULL}. Minimum number of vertices per part. Must
+be supplied together with \code{max_size}; mutually exclusive with
+\code{exact_sizes}.}
 
-\item{max_size}{Integer. Maximum number of vertices per part.}
+\item{max_size}{Integer or \code{NULL}. Maximum number of vertices per part. Must
+be supplied together with \code{min_size}; mutually exclusive with
+\code{exact_sizes}.}
+
+\item{exact_sizes}{Integer vector or \code{NULL}. The exact set of allowed part
+sizes. Mutually exclusive with \code{min_size}/\code{max_size}.}
+
+\item{progress}{Logical. Whether to report enumeration progress. Default
+\code{TRUE}.}
 }
 \value{
 A single integer giving the number of valid partitions.
 }
 \description{
 Count the number of valid partitions of an arbitrary graph into \code{num_parts}
-connected subgraphs, where each subgraph has between \code{min_size} and
-\code{max_size} vertices. Prefer this over \code{\link[=enum_partitions_graph]{enum_partitions_graph()}} when only
-the count is needed, as it avoids storing all partitions in memory.
+connected subgraphs. Part sizes can be constrained either as a range via
+\code{min_size} and \code{max_size}, or as an explicit set of allowed sizes via
+\code{exact_sizes}. Prefer this over \code{\link[=enum_partitions_graph]{enum_partitions_graph()}} when only the
+count is needed, as it avoids storing all partitions in memory.
 }
 \examples{
 g <- igraph::make_ring(6)

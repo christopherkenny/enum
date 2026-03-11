@@ -1,23 +1,22 @@
-build_enumeration_core <- function(graph, min_size, max_size) {
+build_enumeration_core <- function(graph, sizes) {
   total <- as.integer(igraph::vcount(graph))
-  sizes <- min_size:max_size
-  bad_holes <- bad_hole_sizes(min_size, max_size)
+  bad_holes <- bad_hole_sizes_exact(sizes, total)
 
-  tmp_ominos <- make_omino_set(1L, graph)
-  ominos <- if (1L %in% sizes) tmp_ominos else list()
+  adj_list <- igraph::as_adj_list(graph, mode = 'all')
+  adj_ptr  <- c(0L, cumsum(lengths(adj_list, use.names = FALSE)))
+  adj_data <- unlist(lapply(adj_list, as.integer), use.names = FALSE) - 1L
 
-  if (max_size >= 2L) {
-    for (sz in 2:max_size) {
-      tmp_ominos <- grow_ominos(tmp_ominos, graph)
-      if (sz %in% sizes) {
-        ominos <- c(ominos, tmp_ominos)
-      }
-    }
-  }
+  ominos_mat <- .Call(
+    C_generate_ominos,
+    adj_ptr,
+    adj_data,
+    as.integer(total),
+    as.integer(sizes)
+  )
 
-  if (length(ominos) == 0L) {
+  if (ncol(ominos_mat) == 0L) {
     return(list(
-      ominos_mat = matrix(integer(0), nrow = total, ncol = 0L),
+      ominos_mat = ominos_mat,
       fd_ptr = integer(total + 1L),
       fd_data = integer(0L),
       cp_ptr = integer(1L),
@@ -26,12 +25,6 @@ build_enumeration_core <- function(graph, min_size, max_size) {
       total = total
     ))
   }
-
-  ominos_mat <- matrix(unlist(ominos, use.names = FALSE), nrow = total)
-
-  adj_list <- igraph::as_adj_list(graph, mode = 'all')
-  adj_ptr <- c(0L, cumsum(lengths(adj_list, use.names = FALSE)))
-  adj_data <- unlist(lapply(adj_list, as.integer), use.names = FALSE) - 1L
 
   c_result <- .Call(
     C_build_conflicts,
@@ -70,7 +63,8 @@ verify_plan <- function(plan, compatible) {
 
 # Run the recursive partition enumeration via C. When collect = TRUE, returns a
 # matrix (two-pass: count then fill); when collect = FALSE, returns the count.
-run_enumeration <- function(core, num_parts, collect) {
+# When progress = TRUE, a cli progress bar is shown from within C.
+run_enumeration <- function(core, num_parts, collect, progress = TRUE) {
   if (core$n_ominos == 0L) {
     if (collect) {
       return(matrix(integer(0), nrow = core$total, ncol = 0L))
@@ -89,16 +83,11 @@ run_enumeration <- function(core, num_parts, collect) {
     as.integer(core$total),
     as.integer(core$n_ominos),
     as.integer(num_parts),
-    FALSE
+    isTRUE(progress)
   )
 
-  if (!collect) {
-    return(count)
-  }
-
-  if (count == 0L) {
-    return(matrix(integer(0), nrow = core$total, ncol = 0L))
-  }
+  if (!collect) return(count)
+  if (count == 0L) return(matrix(integer(0), nrow = core$total, ncol = 0L))
 
   out <- matrix(0L, nrow = core$total, ncol = count)
   .Call(
@@ -111,12 +100,13 @@ run_enumeration <- function(core, num_parts, collect) {
     as.integer(core$total),
     as.integer(core$n_ominos),
     as.integer(num_parts),
-    out
+    out,
+    FALSE
   )
   out
 }
 
-stream_enumeration <- function(core, num_parts, file) {
+stream_enumeration <- function(core, num_parts, file, progress = TRUE) {
   if (core$n_ominos == 0L) {
     return(0L)
   }
@@ -131,7 +121,8 @@ stream_enumeration <- function(core, num_parts, file) {
     as.integer(core$total),
     as.integer(core$n_ominos),
     as.integer(num_parts),
-    as.character(file)
+    as.character(file),
+    isTRUE(progress)
   )
 }
 

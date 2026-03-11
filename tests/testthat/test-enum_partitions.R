@@ -2,11 +2,7 @@ test_that('enum_partitions returns correct matrix for 2x3 into 2 parts of size 3
   result <- enum_partitions(2, 3, num_parts = 2, min_size = 3, max_size = 3)
   expect_true(is.matrix(result))
   expect_equal(nrow(result), 6)
-  for (i in seq_len(ncol(result))) {
-    expect_equal(sort(unique(result[, i])), c(1L, 2L))
-    expect_equal(sum(result[, i] == 1L), 3)
-    expect_equal(sum(result[, i] == 2L), 3)
-  }
+  expect_true(all(apply(result, 2, function(col) setequal(col, rep(1:2, each = 3)))))
 })
 
 test_that('enum_partitions returns integer matrix', {
@@ -64,6 +60,34 @@ test_that('enum_partitions file argument writes and enum_read_partitions reads b
   )
 })
 
+test_that('enum_partitions exact_sizes=c(3) matches min_size=max_size=3', {
+  r1 <- enum_partitions(2, 3, num_parts = 2, min_size = 3, max_size = 3)
+  r2 <- enum_partitions(2, 3, num_parts = 2, exact_sizes = c(3))
+  expect_equal(r1, r2)
+})
+
+test_that('enum_partitions exact_sizes restricts to allowed sizes only', {
+  # 4x4 into 3 parts where each part is exactly size 4 or 8 (4+4+8=16)
+  result <- enum_partitions(4, 4, num_parts = 3, exact_sizes = c(4, 8))
+  expect_equal(nrow(result), 16)
+  # Every partition must have part sizes in {4, 8}
+  expect_true(all(apply(result, 2, function(col) all(tabulate(col) %in% c(4L, 8L)))))
+})
+
+test_that('enum_partitions exact_sizes count matches enum_count_partitions', {
+  n <- enum_count_partitions(4, 4, num_parts = 3, exact_sizes = c(4, 8))
+  mat <- enum_partitions(4, 4, num_parts = 3, exact_sizes = c(4, 8))
+  expect_equal(n, ncol(mat))
+})
+
+test_that('enum_partitions progress = TRUE returns correct result silently', {
+  result <- enum_partitions(
+    2, 3,
+    num_parts = 2, min_size = 3, max_size = 3, progress = TRUE
+  )
+  expect_equal(ncol(result), 3L)
+})
+
 test_that('enum_partitions validates bad inputs', {
   expect_snapshot(
     enum_partitions(0, 3, num_parts = 2, min_size = 3, max_size = 3),
@@ -79,6 +103,24 @@ test_that('enum_partitions validates bad inputs', {
   )
   expect_snapshot(
     enum_partitions(2, 3, num_parts = 2, min_size = 1, max_size = 2),
+    error = TRUE
+  )
+})
+
+test_that('enum_partitions validates exact_sizes inputs', {
+  # No size argument supplied
+  expect_snapshot(
+    enum_partitions(2, 3, num_parts = 2),
+    error = TRUE
+  )
+  # Both exact_sizes and min_size supplied together
+  expect_snapshot(
+    enum_partitions(2, 3, num_parts = 2, min_size = 3, exact_sizes = c(3)),
+    error = TRUE
+  )
+  # exact_sizes infeasible: parts too large to fit
+  expect_snapshot(
+    enum_partitions(2, 3, num_parts = 2, exact_sizes = c(4, 8)),
     error = TRUE
   )
 })

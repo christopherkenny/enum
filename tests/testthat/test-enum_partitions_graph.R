@@ -12,10 +12,7 @@ test_that('enum_partitions_graph works on a cycle graph', {
   result <- enum_partitions_graph(g, num_parts = 2, min_size = 3, max_size = 3)
   expect_true(is.matrix(result))
   expect_equal(nrow(result), 6)
-  for (i in seq_len(ncol(result))) {
-    expect_equal(sum(result[, i] == 1L), 3)
-    expect_equal(sum(result[, i] == 2L), 3)
-  }
+  expect_true(all(apply(result, 2, function(col) all(tabulate(col) == 3L))))
 })
 
 test_that('enum_partitions_graph matches grid version on a lattice', {

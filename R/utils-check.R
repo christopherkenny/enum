@@ -76,6 +76,96 @@ check_sizes <- function(min_size, max_size, num_parts, nrow, ncol) {
   }
 }
 
+# Validate exact_sizes and return a sorted integer vector of allowed sizes.
+# Checks that exact_sizes is a vector of positive integers and that the
+# requested number of parts can cover the total number of cells.
+check_exact_sizes <- function(exact_sizes, num_parts, total, type = 'tile') {
+  if (
+    !is.numeric(exact_sizes) ||
+      length(exact_sizes) < 1L ||
+      any(exact_sizes < 1L) ||
+      any(exact_sizes != as.integer(exact_sizes))
+  ) {
+    cli::cli_abort('{.arg exact_sizes} must be a non-empty vector of positive integers.')
+  }
+  sizes <- sort(unique(as.integer(exact_sizes)))
+  if (num_parts * max(sizes) < total) {
+    cli::cli_abort(paste0(
+      'Impossible to {type}: {num_parts} parts of at most size {max(sizes)} ',
+      'cannot cover {total} cells.'
+    ))
+  }
+  if (num_parts * min(sizes) > total) {
+    cli::cli_abort(paste0(
+      'Impossible to {type}: {num_parts} parts of at least size {min(sizes)} ',
+      'exceed {total} cells.'
+    ))
+  }
+  sizes
+}
+
+# Validate and resolve size arguments for grid functions. Returns a sorted
+# integer vector of allowed part sizes. Exactly one of (min_size + max_size)
+# or exact_sizes must be supplied.
+resolve_sizes_grid <- function(min_size, max_size, exact_sizes, num_parts, nrow, ncol) {
+  has_range <- !is.null(min_size) || !is.null(max_size)
+  has_exact <- !is.null(exact_sizes)
+
+  if (has_exact && has_range) {
+    cli::cli_abort(
+      'Supply either {.arg exact_sizes} or {.arg min_size}/{.arg max_size}, not both.'
+    )
+  }
+  if (!has_exact && !has_range) {
+    cli::cli_abort(
+      'Supply either {.arg exact_sizes} or both {.arg min_size} and {.arg max_size}.'
+    )
+  }
+
+  total <- nrow * ncol
+
+  if (has_exact) {
+    return(check_exact_sizes(exact_sizes, num_parts, total, type = 'tile'))
+  }
+
+  if (is.null(min_size) || is.null(max_size)) {
+    cli::cli_abort(
+      '{.arg min_size} and {.arg max_size} must both be supplied together.'
+    )
+  }
+  check_sizes(min_size, max_size, num_parts, nrow, ncol)
+  as.integer(min_size):as.integer(max_size)
+}
+
+# Same as resolve_sizes_grid but for graph functions (takes total directly).
+resolve_sizes_graph <- function(min_size, max_size, exact_sizes, num_parts, total) {
+  has_range <- !is.null(min_size) || !is.null(max_size)
+  has_exact <- !is.null(exact_sizes)
+
+  if (has_exact && has_range) {
+    cli::cli_abort(
+      'Supply either {.arg exact_sizes} or {.arg min_size}/{.arg max_size}, not both.'
+    )
+  }
+  if (!has_exact && !has_range) {
+    cli::cli_abort(
+      'Supply either {.arg exact_sizes} or both {.arg min_size} and {.arg max_size}.'
+    )
+  }
+
+  if (has_exact) {
+    return(check_exact_sizes(exact_sizes, num_parts, total, type = 'partition'))
+  }
+
+  if (is.null(min_size) || is.null(max_size)) {
+    cli::cli_abort(
+      '{.arg min_size} and {.arg max_size} must both be supplied together.'
+    )
+  }
+  check_sizes_graph(min_size, max_size, num_parts, total)
+  as.integer(min_size):as.integer(max_size)
+}
+
 check_contiguity <- function(contiguity) {
   match.arg(contiguity, c('rook', 'queen'))
 }

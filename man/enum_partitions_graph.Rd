@@ -4,7 +4,15 @@
 \alias{enum_partitions_graph}
 \title{Enumerate partitions of a graph}
 \usage{
-enum_partitions_graph(graph, num_parts, min_size, max_size, file = NULL)
+enum_partitions_graph(
+  graph,
+  num_parts,
+  min_size = NULL,
+  max_size = NULL,
+  exact_sizes = NULL,
+  file = NULL,
+  progress = TRUE
+)
 }
 \arguments{
 \item{graph}{An \code{igraph} or \code{adj} object. Must be undirected and connected.
@@ -13,15 +21,25 @@ An \code{adj} object is a list where element \code{i} contains the integer indic
 
 \item{num_parts}{Integer. Number of parts to partition the graph into.}
 
-\item{min_size}{Integer. Minimum number of vertices per part.}
+\item{min_size}{Integer or \code{NULL}. Minimum number of vertices per part. Must
+be supplied together with \code{max_size}; mutually exclusive with
+\code{exact_sizes}.}
 
-\item{max_size}{Integer. Maximum number of vertices per part.}
+\item{max_size}{Integer or \code{NULL}. Maximum number of vertices per part. Must
+be supplied together with \code{min_size}; mutually exclusive with
+\code{exact_sizes}.}
+
+\item{exact_sizes}{Integer vector or \code{NULL}. The exact set of allowed part
+sizes. Mutually exclusive with \code{min_size}/\code{max_size}.}
 
 \item{file}{Character or \code{NULL}. If a file path is provided, partitions are
 written to a binary file instead of returned as a matrix. Each partition is
 stored as one 32-bit integer per vertex. Use \code{\link[=enum_read_partitions]{enum_read_partitions()}} to
 read the file back into R. When \code{file} is not \code{NULL}, the function returns
 the partition count invisibly.}
+
+\item{progress}{Logical. Whether to report enumeration progress. Default
+\code{TRUE}.}
 }
 \value{
 When \code{file} is \code{NULL} (default), an integer matrix where each column
@@ -32,9 +50,9 @@ written, invisibly.
 }
 \description{
 Enumerate all partitions of an arbitrary graph into \code{num_parts} connected
-subgraphs, where each subgraph has between \code{min_size} and \code{max_size}
-vertices. Accepts \code{igraph} objects and \code{adj} objects (1-indexed adjacency
-lists).
+subgraphs. Part sizes can be constrained either as a range via \code{min_size}
+and \code{max_size}, or as an explicit set of allowed sizes via \code{exact_sizes}.
+Accepts \code{igraph} objects and \code{adj} objects (1-indexed adjacency lists).
 }
 \examples{
 g <- igraph::make_ring(6)

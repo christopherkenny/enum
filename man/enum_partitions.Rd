@@ -8,10 +8,12 @@ enum_partitions(
   nrow,
   ncol,
   num_parts,
-  min_size,
-  max_size,
+  min_size = NULL,
+  max_size = NULL,
+  exact_sizes = NULL,
   contiguity = c("rook", "queen"),
-  file = NULL
+  file = NULL,
+  progress = TRUE
 )
 }
 \arguments{
@@ -21,9 +23,15 @@ enum_partitions(
 
 \item{num_parts}{Integer. Number of parts to partition the grid into.}
 
-\item{min_size}{Integer. Minimum number of cells per part.}
+\item{min_size}{Integer or \code{NULL}. Minimum number of cells per part. Must be
+supplied together with \code{max_size}; mutually exclusive with \code{exact_sizes}.}
 
-\item{max_size}{Integer. Maximum number of cells per part.}
+\item{max_size}{Integer or \code{NULL}. Maximum number of cells per part. Must be
+supplied together with \code{min_size}; mutually exclusive with \code{exact_sizes}.}
+
+\item{exact_sizes}{Integer vector or \code{NULL}. The exact set of allowed part
+sizes. For example, \code{exact_sizes = c(4, 8)} allows parts of size 4 or 8
+only. Mutually exclusive with \code{min_size}/\code{max_size}.}
 
 \item{contiguity}{Character. Either \code{"rook"} (default) for edge-adjacency
 or \code{"queen"} for edge-and-corner adjacency.}
@@ -33,6 +41,9 @@ written to a binary file instead of returned as a matrix. Each partition is
 stored as \code{nrow * ncol} consecutive 32-bit integers. Use
 \code{\link[=enum_read_partitions]{enum_read_partitions()}} to read the file back into R. When \code{file} is not
 \code{NULL}, the function returns the partition count invisibly.}
+
+\item{progress}{Logical. Whether to report enumeration progress. Default
+\code{TRUE}.}
 }
 \value{
 When \code{file} is \code{NULL} (default), an integer matrix where each column
@@ -43,10 +54,14 @@ written, invisibly.
 }
 \description{
 Enumerate all partitions of an \code{nrow} by \code{ncol} grid into \code{num_parts}
-connected pieces, where each piece has between \code{min_size} and \code{max_size}
-cells.
+connected pieces. Part sizes can be constrained either as a range via
+\code{min_size} and \code{max_size}, or as an explicit set of allowed sizes via
+\code{exact_sizes}. Exactly one of these two forms must be supplied.
 }
 \examples{
 # Partition a 2x3 grid into 2 rook-connected parts of size 3
 enum_partitions(2, 3, num_parts = 2, min_size = 3, max_size = 3)
+
+# Allow only parts of size 4 or 8 (exact sizes)
+enum_partitions(4, 4, num_parts = 3, exact_sizes = c(4, 8))
 }

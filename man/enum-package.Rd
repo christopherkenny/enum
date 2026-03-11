@@ -6,14 +6,23 @@
 \alias{enum-package}
 \title{enum: Enumerate Partitions of Grid Graphs}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 Enumerates polyomino tilings of grid graphs. Partitions an m by n grid into k connected pieces where each piece has a size within given bounds, under rook or queen contiguity rules. A translation of the Julia 'enumerator' package by Schutzman (2019) \doi{10.5281/zenodo.3467675}.
 }
-\author{
-\strong{Maintainer}: Christopher T. Kenny \email{ctkenny@proton.me} (\href{https://orcid.org/0000-0002-9386-6860}{ORCID})
-
-Authors:
+\seealso{
+Useful links:
 \itemize{
-  \item Zachary Schutzman (Author of the original Julia enumerator)
+  \item \url{http://christophertkenny.com/enum/}
+}
+
+}
+\author{
+\strong{Maintainer}: Christopher T. Kenny \email{ctkenny@proton.me} (\href{https://orcid.org/0000-0002-9386-6860}{ORCID}) [copyright holder]
+
+Other contributors:
+\itemize{
+  \item Zachary Schutzman (Author of the original Julia enumerator) [copyright holder]
 }
 
 }

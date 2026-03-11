@@ -8,9 +8,11 @@ enum_count_partitions(
   nrow,
   ncol,
   num_parts,
-  min_size,
-  max_size,
-  contiguity = c("rook", "queen")
+  min_size = NULL,
+  max_size = NULL,
+  exact_sizes = NULL,
+  contiguity = c("rook", "queen"),
+  progress = TRUE
 )
 }
 \arguments{
@@ -20,23 +22,36 @@ enum_count_partitions(
 
 \item{num_parts}{Integer. Number of parts to partition the grid into.}
 
-\item{min_size}{Integer. Minimum number of cells per part.}
+\item{min_size}{Integer or \code{NULL}. Minimum number of cells per part. Must be
+supplied together with \code{max_size}; mutually exclusive with \code{exact_sizes}.}
 
-\item{max_size}{Integer. Maximum number of cells per part.}
+\item{max_size}{Integer or \code{NULL}. Maximum number of cells per part. Must be
+supplied together with \code{min_size}; mutually exclusive with \code{exact_sizes}.}
+
+\item{exact_sizes}{Integer vector or \code{NULL}. The exact set of allowed part
+sizes. For example, \code{exact_sizes = c(4, 8)} allows parts of size 4 or 8
+only. Mutually exclusive with \code{min_size}/\code{max_size}.}
 
 \item{contiguity}{Character. Either \code{"rook"} (default) for edge-adjacency
 or \code{"queen"} for edge-and-corner adjacency.}
+
+\item{progress}{Logical. Whether to report enumeration progress. Default
+\code{TRUE}.}
 }
 \value{
 A single integer giving the number of valid partitions.
 }
 \description{
 Count the number of valid partitions of an \code{nrow} by \code{ncol} grid into
-\code{num_parts} connected pieces, where each piece has between \code{min_size} and
-\code{max_size} cells. Prefer this over \code{\link[=enum_partitions]{enum_partitions()}} when only the count
+\code{num_parts} connected pieces. Part sizes can be constrained either as a
+range via \code{min_size} and \code{max_size}, or as an explicit set of allowed sizes
+via \code{exact_sizes}. Prefer this over \code{\link[=enum_partitions]{enum_partitions()}} when only the count
 is needed, as it avoids storing all partitions in memory.
 }
 \examples{
 # Count partitions of a 2x3 grid into 2 rook-connected parts of size 3
 enum_count_partitions(2, 3, num_parts = 2, min_size = 3, max_size = 3)
+
+# Count with exact sizes
+enum_count_partitions(4, 4, num_parts = 3, exact_sizes = c(4, 8))
 }

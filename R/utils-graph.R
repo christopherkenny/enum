@@ -67,6 +67,7 @@ grow_ominos <- function(ominos, graph) {
   adj <- igraph::as_adj_list(graph, mode = 'all')
   seen <- list()
   result <- list()
+  n_result <- 0L
 
   for (om in ominos) {
     ones <- which(om == 1L)
@@ -80,7 +81,8 @@ grow_ominos <- function(ominos, graph) {
       key <- paste0(candidate, collapse = '')
       if (is.null(seen[[key]])) {
         seen[[key]] <- TRUE
-        result <- c(result, list(candidate))
+        n_result <- n_result + 1L
+        result[[n_result]] <- candidate
       }
     }
   }
@@ -94,6 +96,26 @@ bad_hole_sizes <- function(min_size, max_size) {
   high_end <- 2L * min_size - 1L
   high <- if (high_start <= high_end) high_start:high_end else integer(0)
   c(low, high)
+}
+
+# DP-based bad hole computation for an arbitrary set of allowed sizes.
+# Returns all sizes in 1..total that cannot be expressed as a sum of one or
+# more elements of `sizes` (with repetition).
+bad_hole_sizes_exact <- function(sizes, total) {
+  if (total <= 0L) {
+    return(integer(0))
+  }
+  reachable <- logical(total + 1L)
+  reachable[1L] <- TRUE # 0 cells is always reachable
+  for (s in seq_len(total)) {
+    for (sz in sizes) {
+      if (s >= sz && reachable[s - sz + 1L]) {
+        reachable[s + 1L] <- TRUE
+        break
+      }
+    }
+  }
+  which(!reachable[-1L])
 }
 
 check_holes <- function(omino, bad_holes, graph) {

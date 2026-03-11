@@ -21,6 +21,7 @@ knitr::opts_chunk$set(
 
 `enum` enumerates all partitions of a graph into `k` connected pieces within given piece-size bounds.
 It is a reimplementation of the Julia [enumerator](https://github.com/zschutzman/enumerator) package by Zachary Schutzman, with core algorithms written in C and support for [igraph](https://r.igraph.org/) objects as input.
+Piece sizes can be constrained as a range (`min_size`/`max_size`) or as an exact set of allowed sizes (`exact_sizes`).
 
 ## Installation
 
@@ -40,7 +41,7 @@ Each column of the returned matrix is one valid partition; each row corresponds 
 library(enum)
 
 # All ways to split a 3x3 grid into 3 rook-connected pieces of size 3
-enum_partitions(3, 3, num_parts = 3, min_size = 3, max_size = 3)
+enum_partitions(3, 3, num_parts = 3, min_size = 3, max_size = 3, progress = FALSE)
 ```
 
 For example, one valid partition of the 3×3 grid
@@ -56,7 +57,15 @@ is stored as the column `c(1, 1, 2, 1, 2, 2, 3, 3, 3)`.
 We can also count the number, which is faster if you don't need the full output:
 
 ```{r countgrid}
-enum_count_partitions(3, 3, num_parts = 3, min_size = 3, max_size = 3)
+enum_count_partitions(3, 3, num_parts = 3, min_size = 3, max_size = 3, progress = FALSE)
+```
+
+Instead of a size range, pass `exact_sizes` to restrict parts to a specific set of allowed sizes.
+This is useful when parts must satisfy a particular integer relationship—for example, parts of size `k` and `2k`:
+
+```{r exactsizes}
+# 4x4 grid into 3 parts, each exactly size 4 or 8 (i.e. 4+4+8=16 cells)
+enum_count_partitions(4, 4, num_parts = 3, exact_sizes = c(4, 8), progress = FALSE)
 ```
 
 ### Graph partitions
@@ -67,7 +76,7 @@ For arbitrary graphs, pass an `igraph` object (or an [`adj` object](https://alar
 library(igraph)
 
 g <- make_ring(6)
-enum_partitions_graph(g, num_parts = 2, min_size = 3, max_size = 3)
+enum_partitions_graph(g, num_parts = 2, min_size = 3, max_size = 3, progress = FALSE)
 ```
 
 ### Writing to file
@@ -77,7 +86,7 @@ Each partition is appended as it is found, so memory use stays flat.
 
 ```{r file}
 tmp <- tempfile()
-n <- enum_partitions(4, 4, num_parts = 4, min_size = 4, max_size = 4, file = tmp)
+n <- enum_partitions(4, 4, num_parts = 4, min_size = 4, max_size = 4, file = tmp, progress = FALSE)
 n  # number of partitions written
 ```
 

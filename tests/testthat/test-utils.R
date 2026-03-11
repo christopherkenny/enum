@@ -64,6 +64,23 @@ test_that('bad_hole_sizes returns correct forbidden sizes', {
   expect_equal(bad_hole_sizes(1, 1), integer(0))
 })
 
+test_that('bad_hole_sizes_exact returns correct forbidden sizes for single size', {
+  # {3} with total 5: reachable={3}, bad={1,2,4,5}
+  expect_equal(bad_hole_sizes_exact(3L, 5L), c(1, 2, 4, 5))
+  # {4,8} with total 12: reachable={4,8,12}, bad={1..3,5..7,9..11}
+  expect_equal(bad_hole_sizes_exact(c(4L, 8L), 12L), c(1, 2, 3, 5, 6, 7, 9, 10, 11))
+  # {1} allows everything: no bad holes
+  expect_equal(bad_hole_sizes_exact(1L, 5L), integer(0))
+})
+
+test_that('bad_hole_sizes_exact is consistent with bad_hole_sizes for contiguous ranges', {
+  # For a range [min,max], both should agree up to max(max, 2*min-1)
+  bound <- max(3L, 2L * 3L - 1L)
+  exact <- bad_hole_sizes_exact(3L:3L, bound)
+  formula <- bad_hole_sizes(3L, 3L)
+  expect_equal(exact, formula)
+})
+
 test_that('check_holes rejects ominos leaving forbidden complement components', {
   g <- make_grid_graph(3, 3, 'rook')
   bad <- c(1L, 2L, 4L, 5L)

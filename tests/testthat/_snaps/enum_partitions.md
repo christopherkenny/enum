@@ -30,3 +30,27 @@
       Error in `check_sizes()`:
       ! Impossible to tile: 2 parts of at most size 2 cannot cover 6 cells.
 
+# enum_partitions validates exact_sizes inputs
+
+    Code
+      enum_partitions(2, 3, num_parts = 2)
+    Condition
+      Error in `resolve_sizes_grid()`:
+      ! Supply either `exact_sizes` or both `min_size` and `max_size`.
+
+---
+
+    Code
+      enum_partitions(2, 3, num_parts = 2, min_size = 3, exact_sizes = c(3))
+    Condition
+      Error in `resolve_sizes_grid()`:
+      ! Supply either `exact_sizes` or `min_size`/`max_size`, not both.
+
+---
+
+    Code
+      enum_partitions(2, 3, num_parts = 2, exact_sizes = c(4, 8))
+    Condition
+      Error in `check_exact_sizes()`:
+      ! Impossible to tile: 2 parts of at least size 4 exceed 6 cells.
+
