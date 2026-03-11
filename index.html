@@ -53,7 +53,7 @@
 </div>
 <!-- badges: start -->
 
-<p><code>enum</code> enumerates all partitions of a graph into <code>k</code> connected pieces within given piece-size bounds. It is a reimplementation of the Julia <a href="https://github.com/zschutzman/enumerator" class="external-link">enumerator</a> package by Zachary Schutzman, with core algorithms written in C and support for <a href="https://r.igraph.org/" class="external-link">igraph</a> objects as input.</p>
+<p><code>enum</code> enumerates all partitions of a graph into <code>k</code> connected pieces within given piece-size bounds. It is a reimplementation of the Julia <a href="https://github.com/zschutzman/enumerator" class="external-link">enumerator</a> package by Zachary Schutzman, with core algorithms written in C and support for <a href="https://r.igraph.org/" class="external-link">igraph</a> objects as input. Piece sizes can be constrained as a range (<code>min_size</code>/<code>max_size</code>) or as an exact set of allowed sizes (<code>exact_sizes</code>).</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -72,17 +72,17 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://christophertkenny.com/enum/">enum</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># All ways to split a 3x3 grid into 3 rook-connected pieces of size 3</span></span>
-<span><span class="fu"><a href="reference/enum_partitions.html">enum_partitions</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">3</span>, num_parts <span class="op">=</span> <span class="fl">3</span>, min_size <span class="op">=</span> <span class="fl">3</span>, max_size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/enum_partitions.html">enum_partitions</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">3</span>, num_parts <span class="op">=</span> <span class="fl">3</span>, min_size <span class="op">=</span> <span class="fl">3</span>, max_size <span class="op">=</span> <span class="fl">3</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span></span>
 <span><span class="co">#&gt;  [1,]    1    1    1    1    1    1    1    1    1     1</span></span>
-<span><span class="co">#&gt;  [2,]    1    1    1    1    1    1    2    2    2     2</span></span>
-<span><span class="co">#&gt;  [3,]    2    2    1    1    1    2    2    2    2     3</span></span>
-<span><span class="co">#&gt;  [4,]    1    1    2    2    2    3    1    1    1     1</span></span>
-<span><span class="co">#&gt;  [5,]    2    3    2    2    3    1    1    2    3     2</span></span>
-<span><span class="co">#&gt;  [6,]    2    2    3    2    3    2    2    3    2     3</span></span>
-<span><span class="co">#&gt;  [7,]    3    3    2    3    2    3    3    1    1     1</span></span>
-<span><span class="co">#&gt;  [8,]    3    3    3    3    2    3    3    3    3     2</span></span>
-<span><span class="co">#&gt;  [9,]    3    2    3    3    3    2    3    3    3     3</span></span></code></pre></div>
+<span><span class="co">#&gt;  [2,]    2    1    1    2    2    2    1    1    1     1</span></span>
+<span><span class="co">#&gt;  [3,]    2    2    2    2    3    2    2    1    1     1</span></span>
+<span><span class="co">#&gt;  [4,]    1    1    1    1    1    1    3    2    2     2</span></span>
+<span><span class="co">#&gt;  [5,]    1    2    3    2    2    3    1    3    2     2</span></span>
+<span><span class="co">#&gt;  [6,]    2    2    2    3    3    2    2    3    3     2</span></span>
+<span><span class="co">#&gt;  [7,]    3    3    3    1    1    1    3    2    2     3</span></span>
+<span><span class="co">#&gt;  [8,]    3    3    3    3    2    3    3    2    3     3</span></span>
+<span><span class="co">#&gt;  [9,]    3    3    2    3    3    3    2    3    3     3</span></span></code></pre></div>
 <p>For example, one valid partition of the 3×3 grid</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="dv">1</span> <span class="dv">1</span> <span class="dv">2</span></span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="dv">1</span> <span class="dv">2</span> <span class="dv">2</span></span>
@@ -90,17 +90,26 @@
 <p>is stored as the column <code>c(1, 1, 2, 1, 2, 2, 3, 3, 3)</code>.</p>
 <p>We can also count the number, which is faster if you don’t need the full output:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/enum_count_partitions.html">enum_count_partitions</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">3</span>, num_parts <span class="op">=</span> <span class="fl">3</span>, min_size <span class="op">=</span> <span class="fl">3</span>, max_size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/enum_count_partitions.html">enum_count_partitions</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">3</span>, num_parts <span class="op">=</span> <span class="fl">3</span>, min_size <span class="op">=</span> <span class="fl">3</span>, max_size <span class="op">=</span> <span class="fl">3</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 10</span></span></code></pre></div>
+<p>Instead of a size range, pass <code>exact_sizes</code> to restrict parts to a specific set of allowed sizes. This is useful when parts must satisfy a particular integer relationship—for example, parts of size <code>k</code> and <code>2k</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># 4x4 grid into 3 parts, each exactly size 4 or 8 (i.e. 4+4+8=16 cells)</span></span>
+<span><span class="fu"><a href="reference/enum_count_partitions.html">enum_count_partitions</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, num_parts <span class="op">=</span> <span class="fl">3</span>, exact_sizes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">8</span><span class="op">)</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 326</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="graph-partitions">Graph partitions<a class="anchor" aria-label="anchor" href="#graph-partitions"></a>
 </h3>
 <p>For arbitrary graphs, pass an <code>igraph</code> object (or an <a href="https://alarm-redist.org/adj/" class="external-link"><code>adj</code> object</a>):</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r.igraph.org/" class="external-link">igraph</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: package 'igraph' was built under R version 4.5.2</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Attaching package: 'igraph'</span></span>
+<span><span class="co">#&gt; The following object is masked from 'package:testthat':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     compare</span></span>
 <span><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     decompose, spectrum</span></span>
@@ -109,7 +118,7 @@
 <span><span class="co">#&gt;     union</span></span>
 <span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/make_ring.html" class="external-link">make_ring</a></span><span class="op">(</span><span class="fl">6</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/enum_partitions_graph.html">enum_partitions_graph</a></span><span class="op">(</span><span class="va">g</span>, num_parts <span class="op">=</span> <span class="fl">2</span>, min_size <span class="op">=</span> <span class="fl">3</span>, max_size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/enum_partitions_graph.html">enum_partitions_graph</a></span><span class="op">(</span><span class="va">g</span>, num_parts <span class="op">=</span> <span class="fl">2</span>, min_size <span class="op">=</span> <span class="fl">3</span>, max_size <span class="op">=</span> <span class="fl">3</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      [,1] [,2] [,3]</span></span>
 <span><span class="co">#&gt; [1,]    1    1    1</span></span>
 <span><span class="co">#&gt; [2,]    1    1    2</span></span>
@@ -122,13 +131,13 @@
 <h3 id="writing-to-file">Writing to file<a class="anchor" aria-label="anchor" href="#writing-to-file"></a>
 </h3>
 <p>For large enumerations that would exceed available memory, pass a file path to write partitions directly to disk. Each partition is appended as it is found, so memory use stays flat.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/enum_partitions.html">enum_partitions</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, num_parts <span class="op">=</span> <span class="fl">4</span>, min_size <span class="op">=</span> <span class="fl">4</span>, max_size <span class="op">=</span> <span class="fl">4</span>, file <span class="op">=</span> <span class="va">tmp</span><span class="op">)</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/enum_partitions.html">enum_partitions</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, num_parts <span class="op">=</span> <span class="fl">4</span>, min_size <span class="op">=</span> <span class="fl">4</span>, max_size <span class="op">=</span> <span class="fl">4</span>, file <span class="op">=</span> <span class="va">tmp</span>, progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">n</span>  <span class="co"># number of partitions written</span></span>
 <span><span class="co">#&gt; [1] 117</span></span></code></pre></div>
 <p>Read them back all at once, or in chunks using <code>skip</code> and <code>n</code>:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># All 117 partitions</span></span>
 <span><span class="va">mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/enum_read_partitions.html">enum_read_partitions</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">mat</span><span class="op">)</span></span>
@@ -138,21 +147,21 @@
 <span><span class="fu"><a href="reference/enum_read_partitions.html">enum_read_partitions</a></span><span class="op">(</span><span class="va">tmp</span>, skip <span class="op">=</span> <span class="fl">10</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span></span>
 <span><span class="co">#&gt;  [1,]    1    1    1    1    1    1    1    1    1     1</span></span>
-<span><span class="co">#&gt;  [2,]    1    1    1    1    1    1    1    1    1     1</span></span>
-<span><span class="co">#&gt;  [3,]    1    1    2    2    2    2    2    2    2     2</span></span>
-<span><span class="co">#&gt;  [4,]    2    2    2    2    2    2    2    2    2     3</span></span>
-<span><span class="co">#&gt;  [5,]    1    1    1    1    1    1    1    1    1     1</span></span>
-<span><span class="co">#&gt;  [6,]    3    3    1    1    1    1    1    1    1     1</span></span>
-<span><span class="co">#&gt;  [7,]    3    4    2    2    2    2    2    3    3     2</span></span>
-<span><span class="co">#&gt;  [8,]    2    2    2    2    2    2    3    2    2     3</span></span>
-<span><span class="co">#&gt;  [9,]    4    3    3    3    3    3    4    3    4     4</span></span>
-<span><span class="co">#&gt; [10,]    4    3    3    3    3    4    4    3    4     2</span></span>
-<span><span class="co">#&gt; [11,]    3    4    3    4    3    4    2    3    3     2</span></span>
-<span><span class="co">#&gt; [12,]    2    2    4    4    3    4    3    2    2     3</span></span>
-<span><span class="co">#&gt; [13,]    4    3    3    3    4    3    4    4    4     4</span></span>
-<span><span class="co">#&gt; [14,]    4    4    4    3    4    3    4    4    4     4</span></span>
-<span><span class="co">#&gt; [15,]    3    4    4    4    4    3    3    4    3     4</span></span>
-<span><span class="co">#&gt; [16,]    2    2    4    4    4    4    3    4    3     3</span></span></code></pre></div>
+<span><span class="co">#&gt;  [2,]    1    1    1    1    1    2    2    2    2     1</span></span>
+<span><span class="co">#&gt;  [3,]    1    1    1    1    1    2    2    2    2     2</span></span>
+<span><span class="co">#&gt;  [4,]    2    2    2    2    2    2    2    2    2     2</span></span>
+<span><span class="co">#&gt;  [5,]    3    3    3    3    3    1    1    1    1     3</span></span>
+<span><span class="co">#&gt;  [6,]    1    1    1    1    1    1    1    1    1     1</span></span>
+<span><span class="co">#&gt;  [7,]    2    2    2    4    4    1    1    1    1     4</span></span>
+<span><span class="co">#&gt;  [8,]    2    2    2    2    2    2    2    2    2     2</span></span>
+<span><span class="co">#&gt;  [9,]    3    3    3    3    3    3    3    3    3     3</span></span>
+<span><span class="co">#&gt; [10,]    3    3    4    3    4    3    3    4    3     1</span></span>
+<span><span class="co">#&gt; [11,]    3    4    4    4    4    4    3    4    3     4</span></span>
+<span><span class="co">#&gt; [12,]    2    2    2    2    2    4    3    4    4     2</span></span>
+<span><span class="co">#&gt; [13,]    4    3    3    3    3    3    4    3    3     3</span></span>
+<span><span class="co">#&gt; [14,]    4    4    3    4    3    3    4    3    4     3</span></span>
+<span><span class="co">#&gt; [15,]    4    4    4    4    4    4    4    3    4     4</span></span>
+<span><span class="co">#&gt; [16,]    4    4    4    2    2    4    4    4    4     4</span></span></code></pre></div>
 </div>
 </div>
 </div>

@@ -2,7 +2,7 @@ pandoc: 3.1.11
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles: {}
-last_built: 2026-03-10T21:46Z
+last_built: 2026-03-11T16:18Z
 urls:
   reference: http://christophertkenny.com/enum/reference
   article: http://christophertkenny.com/enum/articles

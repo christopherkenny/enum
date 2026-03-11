@@ -1,14 +1,23 @@
 # Enumerate partitions of a graph
 
 Enumerate all partitions of an arbitrary graph into `num_parts`
-connected subgraphs, where each subgraph has between `min_size` and
-`max_size` vertices. Accepts `igraph` objects and `adj` objects
-(1-indexed adjacency lists).
+connected subgraphs. Part sizes can be constrained either as a range via
+`min_size` and `max_size`, or as an explicit set of allowed sizes via
+`exact_sizes`. Accepts `igraph` objects and `adj` objects (1-indexed
+adjacency lists).
 
 ## Usage
 
 ``` r
-enum_partitions_graph(graph, num_parts, min_size, max_size, file = NULL)
+enum_partitions_graph(
+  graph,
+  num_parts,
+  min_size = NULL,
+  max_size = NULL,
+  exact_sizes = NULL,
+  file = NULL,
+  progress = TRUE
+)
 ```
 
 ## Arguments
@@ -25,11 +34,20 @@ enum_partitions_graph(graph, num_parts, min_size, max_size, file = NULL)
 
 - min_size:
 
-  Integer. Minimum number of vertices per part.
+  Integer or `NULL`. Minimum number of vertices per part. Must be
+  supplied together with `max_size`; mutually exclusive with
+  `exact_sizes`.
 
 - max_size:
 
-  Integer. Maximum number of vertices per part.
+  Integer or `NULL`. Maximum number of vertices per part. Must be
+  supplied together with `min_size`; mutually exclusive with
+  `exact_sizes`.
+
+- exact_sizes:
+
+  Integer vector or `NULL`. The exact set of allowed part sizes.
+  Mutually exclusive with `min_size`/`max_size`.
 
 - file:
 
@@ -39,6 +57,10 @@ enum_partitions_graph(graph, num_parts, min_size, max_size, file = NULL)
   [`enum_read_partitions()`](http://christophertkenny.com/enum/reference/enum_read_partitions.md)
   to read the file back into R. When `file` is not `NULL`, the function
   returns the partition count invisibly.
+
+- progress:
+
+  Logical. Whether to report enumeration progress. Default `TRUE`.
 
 ## Value
 
@@ -53,6 +75,9 @@ written, invisibly.
 ``` r
 g <- igraph::make_ring(6)
 enum_partitions_graph(g, num_parts = 2, min_size = 3, max_size = 3)
+#>  ■                                  0% |  ETA: ?
+#>  ■■■■■■■■■■■                       33% |  ETA:  0s
+#>  ■■■■■■■■■■■■■■■■■■■■■             67% |  ETA:  0s
 #>      [,1] [,2] [,3]
 #> [1,]    1    1    1
 #> [2,]    1    1    2
