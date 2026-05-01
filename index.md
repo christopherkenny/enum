@@ -11,6 +11,7 @@ allowed sizes (`exact_sizes`).
 ## Installation
 
 ``` r
+
 # install.packages('pak')
 pak::pak('christopherkenny/enum')
 ```
@@ -25,6 +26,7 @@ each row corresponds to a grid cell in row-major order, with integer
 values giving part membership.
 
 ``` r
+
 library(enum)
 
 # All ways to split a 3x3 grid into 3 rook-connected pieces of size 3
@@ -55,6 +57,7 @@ We can also count the number, which is faster if you don’t need the full
 output:
 
 ``` r
+
 enum_count_partitions(3, 3, num_parts = 3, min_size = 3, max_size = 3, progress = FALSE)
 #> [1] 10
 ```
@@ -64,6 +67,7 @@ specific set of allowed sizes. This is useful when parts must satisfy a
 particular integer relationship—for example, parts of size `k` and `2k`:
 
 ``` r
+
 # 4x4 grid into 3 parts, each exactly size 4 or 8 (i.e. 4+4+8=16 cells)
 enum_count_partitions(4, 4, num_parts = 3, exact_sizes = c(4, 8), progress = FALSE)
 #> [1] 326
@@ -75,6 +79,7 @@ For arbitrary graphs, pass an `igraph` object (or an [`adj`
 object](https://alarm-redist.org/adj/)):
 
 ``` r
+
 library(igraph)
 #> Warning: package 'igraph' was built under R version 4.5.2
 #> 
@@ -107,6 +112,7 @@ path to write partitions directly to disk. Each partition is appended as
 it is found, so memory use stays flat.
 
 ``` r
+
 tmp <- tempfile()
 n <- enum_partitions(4, 4, num_parts = 4, min_size = 4, max_size = 4, file = tmp, progress = FALSE)
 n  # number of partitions written
@@ -116,6 +122,7 @@ n  # number of partitions written
 Read them back all at once, or in chunks using `skip` and `n`:
 
 ``` r
+
 # All 117 partitions
 mat <- enum_read_partitions(tmp)
 dim(mat)
