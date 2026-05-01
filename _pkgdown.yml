@@ -1,6 +1,7 @@
 url: http://christophertkenny.com/enum/
 template:
   bootstrap: 5
+  package: ctktemplate
 
 reference:
 - title: Grid partitions
